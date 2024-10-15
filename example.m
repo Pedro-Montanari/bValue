@@ -9,12 +9,12 @@ a = 0;
 b = 4;
 tf = 100; 
 
-T.Time = sort(0 + (tf-0).*rand(N,1));
-T.Signal = a + (b-a).*rand(N,1);
+time= sort(0 + (tf-0).*rand(N,1));
+magnitude = a + (b-a).*rand(N,1);
 
 % plot the dummy signal
 figure;
-stairs(T.Time,T.Signal);
+stairs(time,magnitude);
 title("Original Signal");
 ylabel("Signal");
 xlabel("Time");
@@ -30,14 +30,14 @@ xlabel("Time");
 % If known, for example
 % args.ReferenceMagnitude = 1e-3;
 % If unknown
-args.ReferenceMagnitude = min(T.Signal);
+args.ReferenceMagnitude = min(magnitude);
 
-T.Magnitude = log10(T.Signal/args.ReferenceMagnitude);
+magnitude = log10(magnitude/args.ReferenceMagnitude);
 
 % plot the magnitude
 figure;
 title("Magnitude of the signal")
-stairs(T.Time,T.Magnitude);
+stairs(time,magnitude);
 ylabel("Magnitude [dB]");
 xlabel("Time");
 
@@ -62,7 +62,7 @@ args.bValueNumOfPointsToShiftInWindow = floor(N/10);
 
 % To help deciding the "bValueMagnitudeIntervalSize"
 figure;
-histogram(T.Magnitude);
+histogram(magnitude);
 title("Histogram of the signal magnitude");
 ylabel("N of signals");
 xlabel("Magnitude [dB]");
@@ -73,11 +73,11 @@ xlabel("Magnitude [dB]");
 args.bValueMagnitudeIntervalSize = 0.1;
 
 % Run the code
-b_value = bValue(T,args);
+b_value = bValue(time,magnitude,args);
 
 % Plot the output data (b_value and time)
 figure;
-plot(b_value.Output.Time,b_value.Output.Value);
+plot(b_value.Outputime,b_value.Output.Value);
 title("b-Value of original signal");
 ylabel("b-Value");
 xlabel("Time");
@@ -90,22 +90,22 @@ xlabel("Time");
 %% Example 2: Signal with increasing magnitudes
 % As the magnitude of signals increase, the b-value should decrease. To 
 % verify if that is the case, sort the signals in ascending order
-T.Magnitude = sort(T.Magnitude);
-b_value = bValue(T,args);
+magnitude = sort(magnitude);
+b_value = bValue(time,magnitude,args);
 
 figure;
-plot(b_value.Output.Time,b_value.Output.Value);
+plot(b_value.Outputime,b_value.Output.Value);
 title("b-Value of increasing-magnitude signal");
 ylabel("b-Value");
 xlabel("Time");
 %% Example 3: Signal with decreasing magnitudes
 % As the magnitude of signals decrease, the b-value should increase. To 
 % verify if that is the case, sort the signals in descending order
-T.Magnitude = sort(T.Magnitude,"descend");
-b_value = bValue(T,args);
+magnitude = sort(magnitude,"descend");
+b_value = bValue(time,magnitude,args);
 
 figure;
-plot(b_value.Output.Time,b_value.Output.Value);
+plot(b_value.Outputime,b_value.Output.Value);
 title("b-Value of decreasing-magnitude signal");
 ylabel("b-Value");
 xlabel("Time");

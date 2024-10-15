@@ -1,11 +1,11 @@
-function b_value = bValue(T,args)
+function b_value = bValue(time,magnitude,args)
 %bValue : Calculates the b-value and associated parameters
 %   This function calculates the b-value for a set of data.
 %   Input arguments:
-%       T : (structure) containing the following field:
-%           1.  Time (double) = array containing signal times
-%           2.  Magnitude(double) = array containing the signal Magnitude
-%           in dB
+%       time : numerical array (int, float) containing time. Units are
+%       inferred by the user
+%       magnitude: numerical array (int, float) containing the signal magnitude.
+%       Units are inferred by the user
 %       args = structure containing the following fields:
 %           1. bValueNumOfPointsInWindow (double) : scalar indicating how
 %           many values to use in each b-value calculation
@@ -37,34 +37,34 @@ function b_value = bValue(T,args)
 %               iii. PositionOfMagnitudeOfCompleteness : Position of the
 %           magnitude which is the magnitude of completeness
 
-args.MagRange = range(T.Magnitude);
+args.MagRange = range(magnitude);
 
 NumOfIntervals = floor(args.MagRange/args.bValueMagnitudeIntervalSize);
 bValueIntervals(:,1) = ...
-    linspace(min(T.Magnitude),max(T.Magnitude),NumOfIntervals);
+    linspace(min(magnitude),max(magnitude),NumOfIntervals);
 NofHitsInEachInterval = cell(NumOfIntervals,1);
 CurrentWindowPosition = 1:args.bValueNumOfPointsInWindow;
 counter = 1;
 
 % Initialize variables
-CurrentWindowMagnitudes = cell(numel(T.Signal),1);
-bValueTimePoints = zeros(numel(T.Signal),1);
-NofHitsOfMagnitudeOfCompleteness = zeros(numel(T.Signal),1);
-PositionOfMagnitudeOfCompleteness = zeros(numel(T.Signal),1);
-MagnitudeOfCompleteness = zeros(numel(T.Signal),1);
+CurrentWindowMagnitudes = cell(numel(magnitude),1);
+bValueTimePoints = zeros(numel(magnitude),1);
+NofHitsOfMagnitudeOfCompleteness = zeros(numel(magnitude),1);
+PositionOfMagnitudeOfCompleteness = zeros(numel(magnitude),1);
+MagnitudeOfCompleteness = zeros(numel(magnitude),1);
 
-while(CurrentWindowPosition(end) <= numel(T.Time))
+while(CurrentWindowPosition(end) <= numel(time))
     NofHitsInEachInterval{counter} = zeros(2,NumOfIntervals);
 
     for iIntervals=1:NumOfIntervals
         NofHitsInEachInterval{counter}(1,iIntervals) = ...
             bValueIntervals(iIntervals);
         NofHitsInEachInterval{counter}(2,iIntervals) = ...
-            nnz(T.Magnitude(CurrentWindowPosition) >= bValueIntervals(iIntervals));
+            nnz(magnitude(CurrentWindowPosition) >= bValueIntervals(iIntervals));
     end
 
-    CurrentWindowMagnitudes{counter} = T.Magnitude(CurrentWindowPosition);
-    bValueTimePoints(counter) = mean(T.Time(CurrentWindowPosition));
+    CurrentWindowMagnitudes{counter} = magnitude(CurrentWindowPosition);
+    bValueTimePoints(counter) = mean(time(CurrentWindowPosition));
     
     [NofHitsOfMagnitudeOfCompleteness(counter),...
      PositionOfMagnitudeOfCompleteness(counter)] = ...
@@ -107,11 +107,11 @@ for iBvalue=1:numel(bValueTimePoints)
                   RegressionLineCoefficients(iBvalue,2);
 end
 
-b_value.Input.Time = T.Time;
-b_value.Input.Signal = T.Signal;
-b_value.Input.Magnitude = T.Magnitude;
+b_value.Inputime = time;
+b_value.Inpumagnitude = magnitude;
+b_value.Inpumagnitude = magnitude;
 b_value.Output.Value(:,1) = abs(RegressionLineCoefficients(:,1));
-b_value.Output.Time(:,1) = bValueTimePoints;
+b_value.Outputime(:,1) = bValueTimePoints;
 b_value.Aux.NofHitsInEachInterval = cellfun(@transpose,...
                                            NofHitsInEachInterval,...
                                            'UniformOutput', false);
