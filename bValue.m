@@ -111,7 +111,7 @@ b_value.Inputime = time;
 b_value.Inpumagnitude = magnitude;
 b_value.Inpumagnitude = magnitude;
 b_value.Output.Value(:,1) = abs(RegressionLineCoefficients(:,1));
-b_value.Outputime(:,1) = bValueTimePoints;
+b_value.Output.Time(:,1) = bValueTimePoints;
 b_value.Aux.NofHitsInEachInterval = cellfun(@transpose,...
                                            NofHitsInEachInterval,...
                                            'UniformOutput', false);
